@@ -3,12 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' />
     <title>Document</title>
+    <script>
+        function GetSwitchState() {
+            nocache = "&nocache="+ Math.random()*1000000;
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function() {
+                if (this.readyState ==  4) {
+                    if (this.status == 200) {
+                        if (this.responseText != null) {
+                            document.getElementById("switch_txt").innerHTML = this.responseText;
+                        }
+                    }
+                } 
+            }
+
+            request.open("GET", "ajax_switch" + nocache, true);
+            request.send(null);
+            setTimeout('GetSwitchState()', 5000);
+        }
+
+        function onLED(){
+            nocache = "&nocache="+ Math.random()*1000000;
+            var request = new XMLHttpRequest();
+
+            request.open("GET", "enable_led" + nocache, true);
+            request.send(null);
+        }
+
+        function offLED() {
+            nocache = "&nocache="+ Math.random()*1000000;
+            var request = new XMLHttpRequest();
+
+            request.open("GET", "disable_led" + nocache, true);
+            request.send(null);
+        }
+    </script>
 </head>
-<body>
-    <h1>Hello from the Arduino SD Card!</h1>
-    <p>A web page from the Arduino SD card server.</p>
-    <button type='button' class='btn btn-primary btn-lg' data-toggle='modal' data-target='#modalLogin'>Hello</button>
-</body>
-</html>
+<body onload="GetSwitchState()">
+    <div id="cont">
+        <div id="nav" class="bord">
+            <div>
+                <h2>Control Panel</h2>
+                <span>Hi, User</span>
+                <span>v1.0</span>
+            </div>
+            <div class="pointer"><h4>Overview</h4></div>
+            <div class="pointer"><h4>I/O</h4></div>
+            <div class="pointer"><h4>Stats</h4></div>
+        </div>
+        <div id="workspace">
+            <header>
+                <h1>Welcome to Arduino control panel</h1>
+            </header>
+            <div id="canvas">
+                <div>Arduino pin 1: <button onclick="offLED()">OFF</button> <button onclick="onLED()">ON</button></div>
+                <div>Arduino pin 2: <button onclick="offLED()">OFF</button> <button onclick="onLED()">ON</button></div>
+                <div>Arduino pin 3: <button onclick="offLED()">OFF</button> <button onclick="onLED()">ON</button></div>
+                <div>Arduino pin 5: <button onclick="offLED()">OFF</button> <button onclick="onLED()">ON</button></div>
+                <div>Arduino pin 6: <button onclick="offLED()">OFF</button> <button onclick="onLED()">ON</button></div>
+                <div>Arduino pin 7: <button onclick="offLED()">OFF</button> <button onclick="onLED()">ON</button></div>
+                <div>Arduino pin 8: <button onclick="offLED()">OFF</button> <button onclick="onLED()">ON</button></div>
+                <div>Arduino pin 9: <button onclick="offLED()">OFF</button> <button onclick="onLED()">ON</button></div>
+                <div>Arduino pin 10: <button onclick="offLED()">OFF</button> <button onclick="onLED()">ON</button></div>
+                <div>Arduino pin 11: <button onclick="offLED()">OFF</button> <button onclick="onLED()">ON</button></div>
+                <div>Arduino pin 12: <button onclick="offLED()">OFF</button> <button onclick="onLED()">ON</button></div>
+                <div>Arduino pin 13: <button onclick="offLED()">OFF</button> <button onclick="onLED()">ON</button></div>
+            </div>
+        </div>
+        
+    </div>
+    <style>
+        h1,h2,h3,h4,h5,h6{margin: 0;}
+        #cont{
+            margin: 0 auto;
+            width: 70vw;
+            height: 80vh;
+            display: grid;
+            grid-template-columns: 300px auto; 
+            box-shadow: #363636 6px 5px 45px;
+        }
+        #nav{
+            background-color: #363636;
+            color: white;
+            display: grid;
+            grid-template-rows: 100px repeat(3, 50px);
+        }
+        #nav > * {
+            font-weight: 300;
+            justify-self: center;
+            align-self: center;
+        }
+        .btn{padding: 15px;
+        background-color:aqua;
+        }
+        .pointer{cursor: pointer; width: 80%; padding: 10px; background-color:  #464646; border-radius: 5px; text-align: center;}
+        .pointer:hover{background-color: #535353;}
+        #workspace{display: grid; grid-template-rows: 13% 87%;}
+        header{background-color: #2c2c2c; color: white;}
+        header > h1{margin-left: 20px; margin-top: 15px;}
+        #canvas{display: grid; grid-template-rows: repeat(12, 8%); grid-template-columns: 50% 50%;}
+        #canvas>div{margin-left: 20px; align-self: center;}
+        </style>
+</body></html>
