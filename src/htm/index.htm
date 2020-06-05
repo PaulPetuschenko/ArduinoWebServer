@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+</head>
+<body onload="GetSwitchState()">
+    <script>
+        function GetSwitchState() {
+            nocache = "&nocache="+ Math.random()*1000000;
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function() {
+                if (this.readyState ==  4) {
+                    if (this.status == 200) {
+                        if (this.responseText != null) {
+                            document.getElementById("switch_txt").innerHTML = this.responseText;
+                        }
+                    }
+                } 
+            }
+            request.open("GET", "ajax_switch" + nocache, true);
+            request.send(null);
+            setTimeout('GetSwitchState()', 5000);
+        }
+
+        function onLED(){
+            nocache = "&nocache="+ Math.random()*1000000;
+            var request = new XMLHttpRequest();
+
+            request.open("GET", "enable_led" + nocache, true);
+            request.send(null);
+        }
+
+        function offLED() {
+            nocache = "&nocache="+ Math.random()*1000000;
+            var request = new XMLHttpRequest();
+
+            request.open("GET", "disable_led" + nocache, true);
+            request.send(null);
+        }
+
+        // -- ^ AJAX
+
+        var inputs = `
+                <div id="canvas">
+                    <div class="io"><h4>Prefix</h4><h4>Name:</h4><h4>Pin</h4><h4>Switch</h4><h4>Delay</h4><h4>I/O</h4><h4>Status</h4></div>
+                    <div class="io brd">
+                        <form><select><option>DIG</option><option>AN</option></select></form>
+                        <input class="numin nobrd" type="text" value="Digital pin" />
+                        <p>2</p>
+                        <label class="switch"><input type="checkbox"><span class="slider round"></span></label>
+                        <input class="numin" type="number" value="0" min="0" />
+                        <button onclick="const alpha = (a) => {a.innerHTML == 'input' ? a.innerHTML = 'output' : a.innerHTML = 'input'}; alpha(this) ">input</button>
+                        <h5 id="DIO2">Not requested</h5>
+                    </div>
+                </div>
+                `
+        
+        var controlButtons = `
+                <span></span> 
+                <h1>Welcome to Arduino control panel</h1>
+                <button id="new">New</button>
+                <button id="reord">Reorder</button>`
+
+        var overviewin = `<div>Overview</div>`
+        var statsin = `<div>Stats</div>`
+
+        function menuClick(element) {
+            var a = document.getElementById("content");
+            var b = document.getElementById("header");
+            var elems = document.querySelectorAll(".pointer.mn-active");
+            [].forEach.call(elems, function(el) {
+                el.classList.remove("mn-active");
+            });
+
+            element.classList.add("mn-active");
+
+            if(element.id == "iob"){a.innerHTML=inputs; b.innerHTML=controlButtons}
+            else if(element.id == "overviewb"){a.innerHTML=overviewin; b.innerHTML="<span></span><h1>Welcome to Arduino control panel</h1>"}
+            else if(element.id == "statsb"){a.innerHTML=statsin; b.innerHTML="<span></span><h1>Welcome to Arduino control panel</h1>"}
+        }
+
+        
+        
+    </script>
+    <div id="cont">
+        <div id="nav" class="bord">
+            <div>
+                <h2>Control Panel</h2>
+                <span>Hi, User</span>
+                <span>v1.0</span>
+            </div>
+            <div id="overviewb" class="pointer mn-active" onclick="menuClick(this)"><h4>Overview</h4></div>
+            <div id="iob" class="pointer" onclick="menuClick(this)"><h4>I/O</h4></div>
+            <div id="statsb" class="pointer" onclick="menuClick(this)"><h4>Stats</h4></div>
+        </div>
+        <div id="workspace">
+            <header id="header">
+                <span></span>   
+                <h1>Welcome to Arduino control panel</h1>
+                
+            </header>
+            <div id="content">
+                Overview
+            </div>
+        </div>
+        
+    </div>
+    <style>
+        h1,h2,h3,h4,h5,h6{margin: 0;}
+        h1 {margin-left: 20px; font-size: 2vw;}
+        #cont{margin: 0 auto;width: 80vw;height: 80vh;display: grid;grid-template-columns: 300px auto;box-shadow: #363636 6px 5px 45px;}
+        #nav{background-color: #363636;color: white;display: grid;grid-template-rows: 100px repeat(3, 50px);}
+        #nav > * {font-weight: 300;justify-self: center;align-self: center;}
+        .btn{padding: 15px; background-color:aqua;}
+        .pointer{cursor: pointer; width: 80%; padding: 10px; background-color:  #464646; border-radius: 5px; text-align: center;}
+        .pointer:hover{background-color: #535353;}
+        #workspace{display: grid; grid-template-rows: 70px auto;}
+        header{display: grid; grid-template-columns: 5% 65% 10% 20%; background-color: #2c2c2c; color: white;}
+        header>*{align-self: center;}
+        header button { width: 70%; height: 55%; border: none; font-size: medium; font-weight: 400; color: white; border-radius: 6px;}
+        #new {background-color: #2c7ac5;}
+        #reord {background-color: #7b57c3;}
+        #new:hover {background-color: #276fb3;}
+        #reord:hover {background-color: #7452b9;}
+        button:focus{outline: none;}
+        #canvas{display: grid; grid-template-rows: 30px repeat(50, auto); margin: 10px; overflow: scroll; max-height: 70vh; min-width: 0; min-height: 0;}
+        #canvas>div{align-self: center;}
+        .switch {position: relative; display: inline-block; width: 30px; height: 17px;}
+        .switch input {opacity: 0; width: 0; height: 0;}
+        .slider {position: absolute;cursor: pointer;top: 0;left: 0;right: 0;bottom: 0;background-color: #ccc;-webkit-transition: .4s;transition: .4s;}
+        .slider:before {position: absolute;content: "";height: 13px;width: 13px;left: 2px;bottom: 2px;background-color: white;-webkit-transition: .4s;transition: .4s;}
+        input:checked + .slider {background-color: #2196F3;}
+        input:focus + .slider {box-shadow: 0 0 1px #2196F3;}
+        input:checked + .slider:before {-webkit-transform: translateX(13px);-ms-transform: translateX(13px);transform: translateX(13px);}
+        .slider.round {border-radius: 34px;}
+        .slider.round:before {border-radius: 50%;}
+        .io{display: grid; grid-template-columns: 10% 30% 10% 10% 10% 10% 20%; }
+        .brd{border-bottom: solid #999 1px;}
+        .io>*{align-self: center; justify-self: center;}
+        ::-webkit-scrollbar {width: 0px;}
+        .mn-active{background-color: #2c7ac5;}
+        .mn-active:hover{ background-color: #2c7ac5 !important;}
+        .numin{width: 50%; border: none; border-bottom: solid #999 1px ;}
+        .numin:focus,.numin:active{ outline: none;border: none; border-bottom: solid 1px #2196F3;}
+        .ios{width: 60px;}
+        .nobrd{border: none; font-size: large;}
+        select{border: none; outline: none; font-size: large;}      
+        </style>
+</body></html>
