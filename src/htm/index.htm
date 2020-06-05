@@ -46,26 +46,42 @@
         var inputs = `
                 <div id="canvas">
                     <div class="io"><h4>Prefix</h4><h4>Name:</h4><h4>Pin</h4><h4>Switch</h4><h4>Delay</h4><h4>I/O</h4><h4>Status</h4></div>
-                    <div class="io brd">
+                </div>
+                `
+        
+        var inpTemlate = `
+                    
                         <form><select><option>DIG</option><option>AN</option></select></form>
                         <input class="numin nobrd" type="text" value="Digital pin" />
                         <p>2</p>
                         <label class="switch"><input type="checkbox"><span class="slider round"></span></label>
                         <input class="numin" type="number" value="0" min="0" />
-                        <button onclick="const alpha = (a) => {a.innerHTML == 'input' ? a.innerHTML = 'output' : a.innerHTML = 'input'}; alpha(this) ">input</button>
+                        <button class="ios" onclick="const alpha = (a) => {a.innerHTML == 'input' ? a.innerHTML = 'output' : a.innerHTML = 'input'}; alpha(this) ">input</button>
                         <h5 id="DIO2">Not requested</h5>
-                    </div>
-                </div>
-                `
+                    `
         
+        const newIO = () => {
+            var temp = document.createElement("div");
+            var a = document.getElementById("canvas");
+            temp.innerHTML=inpTemlate;
+            temp.setAttribute('class', 'io brd');
+
+            a.appendChild(temp);
+        } 
+
+        
+
         var controlButtons = `
                 <span></span> 
-                <h1>Welcome to Arduino control panel</h1>
-                <button id="new">New</button>
+                <h1>Arduino control panel</h1>
+                <button onclick="newIO(this)" id="new">New</button>
                 <button id="reord">Reorder</button>`
+
+        
 
         var overviewin = `<div>Overview</div>`
         var statsin = `<div>Stats</div>`
+        var settingsin = `<div>Settings</div>`
 
         function menuClick(element) {
             var a = document.getElementById("content");
@@ -74,12 +90,14 @@
             [].forEach.call(elems, function(el) {
                 el.classList.remove("mn-active");
             });
-
+            
+            
             element.classList.add("mn-active");
 
             if(element.id == "iob"){a.innerHTML=inputs; b.innerHTML=controlButtons}
-            else if(element.id == "overviewb"){a.innerHTML=overviewin; b.innerHTML="<span></span><h1>Welcome to Arduino control panel</h1>"}
-            else if(element.id == "statsb"){a.innerHTML=statsin; b.innerHTML="<span></span><h1>Welcome to Arduino control panel</h1>"}
+            else if(element.id == "overviewb"){a.innerHTML=overviewin; b.innerHTML="<span></span><h1>Arduino control panel</h1>"}
+            else if(element.id == "statsb"){a.innerHTML=statsin; b.innerHTML="<span></span><h1>Arduino control panel</h1>"}
+            else if(element.id == "settingsb"){a.innerHTML=settingsin; b.innerHTML="<span></span><h1>Arduino control panel</h1>"}
         }
 
         
@@ -95,11 +113,12 @@
             <div id="overviewb" class="pointer mn-active" onclick="menuClick(this)"><h4>Overview</h4></div>
             <div id="iob" class="pointer" onclick="menuClick(this)"><h4>I/O</h4></div>
             <div id="statsb" class="pointer" onclick="menuClick(this)"><h4>Stats</h4></div>
+            <div id="settingsb" class="pointer" onclick="menuClick(this)"><h4>Settings</h4></div>
         </div>
         <div id="workspace">
             <header id="header">
                 <span></span>   
-                <h1>Welcome to Arduino control panel</h1>
+                <h1>Arduino control panel</h1>
                 
             </header>
             <div id="content">
@@ -111,8 +130,9 @@
     <style>
         h1,h2,h3,h4,h5,h6{margin: 0;}
         h1 {margin-left: 20px; font-size: 2vw;}
+        h5 {font-size: medium;}
         #cont{margin: 0 auto;width: 80vw;height: 80vh;display: grid;grid-template-columns: 300px auto;box-shadow: #363636 6px 5px 45px;}
-        #nav{background-color: #363636;color: white;display: grid;grid-template-rows: 100px repeat(3, 50px);}
+        #nav{background-color: #363636;color: white;display: grid;grid-template-rows: 100px repeat(6, 50px);}
         #nav > * {font-weight: 300;justify-self: center;align-self: center;}
         .btn{padding: 15px; background-color:aqua;}
         .pointer{cursor: pointer; width: 80%; padding: 10px; background-color:  #464646; border-radius: 5px; text-align: center;}
@@ -126,7 +146,7 @@
         #new:hover {background-color: #276fb3;}
         #reord:hover {background-color: #7452b9;}
         button:focus{outline: none;}
-        #canvas{display: grid; grid-template-rows: 30px repeat(50, auto); margin: 10px; overflow: scroll; max-height: 70vh; min-width: 0; min-height: 0;}
+        #canvas{display: grid; grid-template-rows: 30px repeat(50, auto); margin: 10px;  max-height: 70vh; min-width: 0; min-height: 0; overflow: scroll;}
         #canvas>div{align-self: center;}
         .switch {position: relative; display: inline-block; width: 30px; height: 17px;}
         .switch input {opacity: 0; width: 0; height: 0;}
@@ -135,7 +155,7 @@
         input:checked + .slider {background-color: #2196F3;}
         input:focus + .slider {box-shadow: 0 0 1px #2196F3;}
         input:checked + .slider:before {-webkit-transform: translateX(13px);-ms-transform: translateX(13px);transform: translateX(13px);}
-        .slider.round {border-radius: 34px;}
+        .slider.round {border-radius: 25px;}
         .slider.round:before {border-radius: 50%;}
         .io{display: grid; grid-template-columns: 10% 30% 10% 10% 10% 10% 20%; }
         .brd{border-bottom: solid #999 1px;}
@@ -143,9 +163,10 @@
         ::-webkit-scrollbar {width: 0px;}
         .mn-active{background-color: #2c7ac5;}
         .mn-active:hover{ background-color: #2c7ac5 !important;}
-        .numin{width: 50%; border: none; border-bottom: solid #999 1px ;}
+        .numin{width: 50%; border: none; border-bottom: solid #999 1px ; font-size: medium;}
         .numin:focus,.numin:active{ outline: none;border: none; border-bottom: solid 1px #2196F3;}
-        .ios{width: 60px;}
+        .ios{width: 80px; border: none; padding: 4px 0 4px 0; color: white; background-color: #2196F3; border-radius: 25px; font-size: medium;}
+        .ios:hover{background-color: #2c7ac5;}
         .nobrd{border: none; font-size: large;}
         select{border: none; outline: none; font-size: large;}      
         </style>
